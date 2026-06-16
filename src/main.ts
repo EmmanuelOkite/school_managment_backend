@@ -1,15 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DataSource } from 'typeorm';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const dataSource = app.get(DataSource);
-  if (dataSource.isInitialized) {
-    console.log('✅ Database connected successfully!');
-  }
+  
+  const config = new DocumentBuilder()
+    .setTitle('My NestJS API')
+    .setDescription('The core API description and documentation')
+    .setVersion('1.0')
+    .addBearerAuth() 
+    .build();
 
-  await app.listen(3000);
+  
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('api', app, document);
+
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
