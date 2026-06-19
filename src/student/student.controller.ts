@@ -27,7 +27,6 @@ import { Student } from './entities/student.entity';
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-  // ─── CREATE ──────────────────────────────────────────────────────────────────
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -53,7 +52,6 @@ export class StudentController {
     return this.studentService.create(dto);
   }
 
-  // ─── GET ALL ─────────────────────────────────────────────────────────────────
 
   @Get()
   @ApiOperation({
@@ -69,7 +67,6 @@ export class StudentController {
     return this.studentService.findAll();
   }
 
-  // ─── GET ONE ─────────────────────────────────────────────────────────────────
 
   @Get(':id')
   @ApiOperation({
@@ -92,7 +89,6 @@ export class StudentController {
     return this.studentService.findOne(id);
   }
 
-  // ─── UPDATE ──────────────────────────────────────────────────────────────────
 
   @Patch(':id')
   @ApiOperation({
@@ -123,7 +119,6 @@ export class StudentController {
     return this.studentService.update(id, dto);
   }
 
-  // ─── DELETE ──────────────────────────────────────────────────────────────────
 
   @Delete(':id')
   @ApiOperation({
