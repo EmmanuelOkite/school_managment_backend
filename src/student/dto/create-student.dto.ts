@@ -70,7 +70,9 @@ export class CreateStudentDto {
   })
   @ValidateIf((o) => o.level === StudentLevel.A_LEVEL)
   @IsString()
-  @IsNotEmpty({ message: 'subjectCombination is required for A Level students' })
+  @IsNotEmpty({
+    message: 'subjectCombination is required for A Level students',
+  })
   subjectCombination?: string;
 
   @ApiProperty({
