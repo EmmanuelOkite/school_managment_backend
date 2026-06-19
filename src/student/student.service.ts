@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Student } from './student.entity';
+import { Student } from './entities/student.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentLevel } from './enums/student.enum';
@@ -84,7 +84,7 @@ export class StudentService {
 
     // Clear subject combination when switching to O Level
     if (dto.level === StudentLevel.O_LEVEL) {
-      student.subjectCombination = null;
+      student.subjectCombination = undefined;
     }
 
     return this.studentRepo.save(student);

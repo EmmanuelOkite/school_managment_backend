@@ -5,53 +5,53 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { StudentClass, StudentLevel, Gender } from './enums/student.enum';
+import { StudentClass, StudentLevel, Gender } from '../enums/student.enum';
 
 @Entity('students')
 export class Student {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ unique: true })
-  studentId: string;
+  studentId!: string;
 
   @Column()
-  surname: string;
+  surname!: string;
 
   @Column()
-  firstName: string;
+  firstName!: string;
 
   @Column({ nullable: true })
-  otherNames: string;
+  otherNames?: string;
 
   @Column({ type: 'enum', enum: StudentClass })
-  class: StudentClass;
+  class!: StudentClass;
 
   @Column({ type: 'enum', enum: StudentLevel })
-  level: StudentLevel;
+  level!: StudentLevel;
 
   /**
    * Only required when level is A_LEVEL.
    * Example: "PCM" (Physics, Chemistry, Math)
    */
   @Column({ nullable: true })
-  subjectCombination: string;
+  subjectCombination?: string;
 
   @Column()
-  age: number;
+  age!: number;
 
   @Column({ type: 'enum', enum: Gender })
-  gender: Gender;
+  gender!: Gender;
 
   @Column()
-  nationality: string;
+  nationality!: string;
 
   @Column({ type: 'date' })
-  dateOfBirth: string;
+  dateOfBirth!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

@@ -19,7 +19,7 @@ export class CreateStudentDto {
   })
   @IsString()
   @IsNotEmpty()
-  studentId: string;
+  studentId!: string;
 
   @ApiProperty({
     description: 'Student surname / last name',
@@ -27,7 +27,7 @@ export class CreateStudentDto {
   })
   @IsString()
   @IsNotEmpty()
-  surname: string;
+  surname!: string;
 
   @ApiProperty({
     description: 'Student first name',
@@ -35,7 +35,7 @@ export class CreateStudentDto {
   })
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  firstName!: string;
 
   @ApiPropertyOptional({
     description: 'Any other names (optional)',
@@ -51,7 +51,7 @@ export class CreateStudentDto {
     example: StudentClass.SENIOR_THREE,
   })
   @IsEnum(StudentClass)
-  class: StudentClass;
+  class!: StudentClass;
 
   @ApiProperty({
     description: 'Education level — O Level or A Level',
@@ -59,7 +59,7 @@ export class CreateStudentDto {
     example: StudentLevel.A_LEVEL,
   })
   @IsEnum(StudentLevel)
-  level: StudentLevel;
+  level!: StudentLevel;
 
   @ApiPropertyOptional({
     description:
@@ -82,7 +82,7 @@ export class CreateStudentDto {
   @IsInt()
   @Min(5)
   @Max(30)
-  age: number;
+  age!: number;
 
   @ApiProperty({
     description: 'Gender of the student',
@@ -90,7 +90,7 @@ export class CreateStudentDto {
     example: Gender.MALE,
   })
   @IsEnum(Gender)
-  gender: Gender;
+  gender!: Gender;
 
   @ApiProperty({
     description: 'Nationality of the student',
@@ -98,12 +98,12 @@ export class CreateStudentDto {
   })
   @IsString()
   @IsNotEmpty()
-  nationality: string;
+  nationality!: string;
 
   @ApiProperty({
     description: 'Date of birth in ISO 8601 format (YYYY-MM-DD)',
     example: '2007-04-15',
   })
   @IsDateString()
-  dateOfBirth: string;
+  dateOfBirth!: string;
 }

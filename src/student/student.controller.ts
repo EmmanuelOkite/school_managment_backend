@@ -20,7 +20,7 @@ import {
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
-import { Student } from './student.entity';
+import { Student } from './entities/student.entity';
 
 @ApiTags('Students')
 @Controller('students')
@@ -74,7 +74,8 @@ export class StudentController {
   @Get(':id')
   @ApiOperation({
     summary: 'Retrieve a single student by UUID',
-    description: 'Fetches the full profile of a student using their system UUID.',
+    description:
+      'Fetches the full profile of a student using their system UUID.',
   })
   @ApiParam({
     name: 'id',
@@ -142,9 +143,7 @@ export class StudentController {
     },
   })
   @ApiResponse({ status: 404, description: 'Student not found.' })
-  remove(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<{ message: string }> {
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<{ message: string }> {
     return this.studentService.remove(id);
   }
 }
