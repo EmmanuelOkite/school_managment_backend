@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { StudentModule } from './student/student.module';
 import { Student } from './student/entities/student.entity';
+import { TeacherModule } from './teacher/teacher.module';
+import { Teacher } from './teacher/entities/teacher.entity';
 
 @Module({
   imports: [
@@ -14,10 +16,11 @@ import { Student } from './student/entities/student.entity';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'innovation2?',
       database: process.env.DB_NAME || 'school_db',
-      entities: [Student],
+      entities: [Student, Teacher],
       synchronize: true,
     }),
     StudentModule,
+    TeacherModule,
   ],
   controllers: [AppController],
   providers: [AppService],
