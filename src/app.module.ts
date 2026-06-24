@@ -6,7 +6,8 @@ import { StudentModule } from './student/student.module';
 import { Student } from './student/entities/student.entity';
 import { TeacherModule } from './teacher/teacher.module';
 import { Teacher } from './teacher/entities/teacher.entity';
-
+import { ParentModule } from './parent/parent.module';
+import { Parent } from './parent/entities/parent.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -16,11 +17,12 @@ import { Teacher } from './teacher/entities/teacher.entity';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'innovation2?',
       database: process.env.DB_NAME || 'school_db',
-      entities: [Student, Teacher],
+      entities: [Student, Teacher, Parent],
       synchronize: true,
     }),
     StudentModule,
     TeacherModule,
+    ParentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
