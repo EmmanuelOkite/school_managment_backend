@@ -18,7 +18,7 @@ export class TeacherService {
   ) {}
 
   async create(dto: CreateTeacherDto): Promise<Omit<Teacher, 'password'>> {
-    // Check unique fields
+    
     const [existingId, existingEmail, existingStaff, existingUsername] =
       await Promise.all([
         this.teacherRepo.findOne({ where: { teacherId: dto.teacherId } }),
