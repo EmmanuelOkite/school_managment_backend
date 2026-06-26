@@ -11,7 +11,7 @@ import { Parent } from './parent/entities/parent.entity';
 import { ExamModule } from './exam/exam.module';
 import { Exam } from './exam/entities/exam.entity';
 import { TimetableModule } from './timetable/timetable.module';
-import { Timetable } from './timetable/enums/entities/timetable.entity';
+import { Timetable } from './timetable/entities/timetable.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
