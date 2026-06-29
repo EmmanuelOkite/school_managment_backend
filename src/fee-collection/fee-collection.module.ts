@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeeCollection } from './entities/fee-collection.entity';
-import { Student } from '../../student/entities/student.entity';
+import { Student } from '../student/entities/student.entity';
 import { FeeStructure } from '../fee-structure/entities/fee-structure.entity';
 import { StudentBalance } from '../student-balance/entities/student-balance.entity';
 import { FeeCollectionService } from './fee-collection.service';
