@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, ConflictException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FeeCollection } from './entities/fee-collection.entity';
-import { Student } from '../../student/entities/student.entity';
+import { Student } from '../student/entities/student.entity';
 import { FeeStructure } from '../fee-structure/entities/fee-structure.entity';
 import { StudentBalance } from '../student-balance/entities/student-balance.entity';
 import { CreateFeeCollectionDto } from './dto/create-fee-collection.dto';
