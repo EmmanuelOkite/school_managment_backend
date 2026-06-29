@@ -2,7 +2,7 @@ import {
   Entity, PrimaryGeneratedColumn, Column,
   OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn,
 } from 'typeorm';
-import { Student } from '../../../student/entities/student.entity';
+import { Student } from '../../student/entities/student.entity';
 import { BalanceStatus } from '../enums/student-balance.enum';
 
 @Entity('student_balances')
