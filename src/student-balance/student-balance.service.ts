@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StudentBalance } from './entities/student-balance.entity';
-import { Student } from '../../student/entities/student.entity';
+import { Student } from '../student/entities/student.entity';
 import { UpdateStudentBalanceDto } from './dto/update-student-balance.dto';
 import { BalanceStatus } from './enums/student-balance.enum';
 
