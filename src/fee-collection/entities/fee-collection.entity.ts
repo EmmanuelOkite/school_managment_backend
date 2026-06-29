@@ -3,7 +3,7 @@ import {
   ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn,
 } from 'typeorm';
 import { PaymentMethod } from '../enums/fee-collection.enum';
-import { Student } from '../../../student/entities/student.entity';
+import { Student } from '../../student/entities/student.entity';
 import { FeeStructure } from '../../fee-structure/entities/fee-structure.entity';
 
 @Entity('fee_collections')
