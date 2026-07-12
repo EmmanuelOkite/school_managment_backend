@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Announcement } from './entities/announcement.entity';
+import { Announcement } from '../announcement/entities/announcement.entity';
 import { Student } from '../student/entities/student.entity';
 import { Teacher } from '../teacher/entities/teacher.entity';
 import { FeeCollection } from '../fee-collection/entities/fee-collection.entity';

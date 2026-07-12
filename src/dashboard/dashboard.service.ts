@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Announcement } from './entities/announcement.entity';
+import { Announcement } from '../announcement/entities/announcement.entity';
 import { Student } from '../student/entities/student.entity';
 import { Teacher } from '../teacher/entities/teacher.entity';
 import { FeeCollection } from '../fee-collection/entities/fee-collection.entity';
 import { StudentBalance } from '../student-balance/entities/student-balance.entity';
 import { Exam } from '../exam/entities/exam.entity';
-import { CreateAnnouncementDto } from './dto/create-announcement.dto';
-import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
+import { CreateAnnouncementDto } from '../announcement/dto/create-announcement.dto';
+import { UpdateAnnouncementDto } from '../announcement/dto/update-announcement.dto';
 import { AnnouncementStatus } from './enums/dashboard.enum';
 
 @Injectable()

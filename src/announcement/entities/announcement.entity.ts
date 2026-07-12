@@ -2,7 +2,7 @@ import {
   Entity, PrimaryGeneratedColumn, Column,
   CreateDateColumn, UpdateDateColumn,
 } from 'typeorm';
-import { AnnouncementStatus } from '../enums/dashboard.enum';
+import { AnnouncementStatus } from '../../dashboard/enums/dashboard.enum';
 
 @Entity('announcements')
 export class Announcement {

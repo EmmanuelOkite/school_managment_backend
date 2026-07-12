@@ -6,8 +6,8 @@ import {
   ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody,
 } from '@nestjs/swagger';
 import { DashboardService } from './dashboard.service';
-import { CreateAnnouncementDto } from './dto/create-announcement.dto';
-import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
+import { CreateAnnouncementDto } from '../announcement/dto/create-announcement.dto';
+import { UpdateAnnouncementDto } from '../announcement/dto/update-announcement.dto';
 
 @ApiTags('Dashboard')
 @Controller('dashboard')

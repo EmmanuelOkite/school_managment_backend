@@ -1,6 +1,6 @@
 import { IsString, IsEnum, IsDateString, IsOptional, IsNotEmpty } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { AnnouncementStatus } from '../enums/dashboard.enum';
+import { AnnouncementStatus } from '../../dashboard/enums/dashboard.enum';
 
 export class CreateAnnouncementDto {
   @ApiProperty({ description: 'Title of the announcement', example: 'School Closure Notice' })
