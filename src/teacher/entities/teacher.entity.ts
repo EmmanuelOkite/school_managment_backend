@@ -38,8 +38,8 @@ export class Teacher {
   @Column({ type: 'date' })
   dateOfBirth!: string;
 
-  @Column()
-  nationality!: string;
+  @Column({ nullable: true })
+  nationality?: string;
 
   @Column()
   phoneNumber!: string;
@@ -47,13 +47,10 @@ export class Teacher {
   @Column({ unique: true })
   email!: string;
 
-  @Column({ nullable: true })
-  physicalAddress?: string;
+  @Column()
+  physicalAddress!: string;
 
   // ── Employment Information ──────────────────────────────────────────────────
-
-  @Column({ unique: true })
-  staffNumber!: string;
 
   @Column({ type: 'enum', enum: EmploymentType })
   employmentType!: EmploymentType;
@@ -76,13 +73,13 @@ export class Teacher {
   highestQualification!: HighestQualification;
 
   @Column()
-  specialization!: string;
-
-  @Column()
   institution!: string;
 
-  @Column()
-  yearsOfExperience!: number;
+  @Column({ nullable: true })
+  specialization?: string;
+
+  @Column({ nullable: true })
+  yearsOfExperience?: number;
 
   @Column({ nullable: true })
   certifications?: string;
@@ -92,8 +89,11 @@ export class Teacher {
   @Column('simple-array')
   subjectsTaught!: string[];
 
-  @Column('simple-array')
-  assignedClasses!: string[];
+  @Column('simple-array', { nullable: true })
+  assignedClasses?: string[];
+
+  @Column('simple-array', { nullable: true })
+  assignedStreams?: string[];
 
   @Column({ default: false })
   isClassTeacher!: boolean;
@@ -109,13 +109,19 @@ export class Teacher {
   @Column()
   emergencyContactPhone!: string;
 
+  @Column({ nullable: true })
+  emergencyContactAddress?: string;
+
   // ── System Information ──────────────────────────────────────────────────────
 
-  @Column({ unique: true })
-  username!: string;
+  @Column({ default: false })
+  createLoginAccount!: boolean;
 
-  @Column()
-  password!: string;
+  @Column({ unique: true, nullable: true })
+  username?: string;
+
+  @Column({ nullable: true })
+  password?: string;
 
   @Column({ type: 'enum', enum: TeacherRole, default: TeacherRole.TEACHER })
   role!: TeacherRole;
