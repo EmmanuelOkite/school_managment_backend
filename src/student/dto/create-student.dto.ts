@@ -108,4 +108,20 @@ export class CreateStudentDto {
   })
   @IsDateString()
   dateOfBirth!: string;
+
+  @ApiProperty({
+    description: 'Full name of the parent or guardian',
+    example: 'Grace Mukasa',
+  })
+  @IsString()
+  @IsNotEmpty()
+  parentName!: string;
+
+  @ApiProperty({
+    description: 'Home / physical address',
+    example: 'Kampala, Nakawa Division',
+  })
+  @IsString()
+  @IsNotEmpty()
+  address!: string;
 }

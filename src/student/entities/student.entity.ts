@@ -49,6 +49,14 @@ export class Student {
   @Column({ type: 'date' })
   dateOfBirth!: string;
 
+  // Nullable at the DB level so existing rows don't break schema sync;
+  // still required for new submissions via CreateStudentDto validation.
+  @Column({ nullable: true })
+  parentName?: string;
+
+  @Column({ nullable: true })
+  address?: string;
+
   @CreateDateColumn()
   createdAt!: Date;
 
