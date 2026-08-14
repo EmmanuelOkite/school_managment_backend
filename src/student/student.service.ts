@@ -1,11 +1,10 @@
 import {
   Injectable,
   NotFoundException,
-  ConflictException,
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
@@ -33,17 +32,18 @@ export class StudentService {
       );
     }
 
-    const existing = await this.studentRepo.findOne({
-      where: { studentId: dto.studentId },
-    });
-    if (existing) {
-      throw new ConflictException(
-        `Student with ID "${dto.studentId}" already exists.`,
-      );
-    }
-
-    const student = this.studentRepo.create(dto);
+    const studentId = await this.generateStudentId();
+    const student = this.studentRepo.create({ ...dto, studentId });
     return this.studentRepo.save(student);
+  }
+
+  // Generates a unique student ID in the form STU-{current year}-{6-digit sequence}
+  private async generateStudentId(): Promise<string> {
+    const year = new Date().getFullYear();
+    const prefix = `STU-${year}-`;
+    const countForYear = await this.studentRepo.count({ where: { studentId: Like(`${prefix}%`) } });
+    const sequence = String(countForYear + 1).padStart(6, '0');
+    return `${prefix}${sequence}`;
   }
 
   async findAll(): Promise<Student[]> {
