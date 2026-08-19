@@ -21,6 +21,8 @@ import { ExpenseModule } from './expense/expense.module';
 import { StudentBalanceModule } from './student-balance/student-balance.module';
 import { FeeStructureModule } from './fee-structure/fee-structure.module';
 import { FeeCollectionModule } from './fee-collection/fee-collection.module';
+import { ClassModule } from './class/class.module';
+import { Class } from './class/entities/class.entity';
 
 @Module({
   imports: [
@@ -31,7 +33,7 @@ import { FeeCollectionModule } from './fee-collection/fee-collection.module';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'innovation2?',
       database: process.env.DB_NAME || 'school_db',
-      entities: [Student, Teacher, Parent, Exam, Timetable, FeeCollection, FeeStructure, StudentBalance, Expense],
+      entities: [Student, Teacher, Parent, Exam, Timetable, FeeCollection, FeeStructure, StudentBalance, Expense, Class],
       synchronize: true,
     }),
     StudentModule,
@@ -44,6 +46,7 @@ import { FeeCollectionModule } from './fee-collection/fee-collection.module';
     FeeStructureModule,
     StudentBalanceModule,
     ExpenseModule,
+    ClassModule,
   ],
   controllers: [AppController],
   providers: [AppService],
