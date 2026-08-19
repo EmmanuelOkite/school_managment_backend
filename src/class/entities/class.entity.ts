@@ -2,13 +2,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { EducationLevel, Term, ClassStatus } from '../enums/class.enum';
-import { Teacher } from '../../teacher/entities/teacher.entity';
+import { ClassName, EducationLevel, Term, ClassStatus } from '../enums/class.enum';
 
 @Entity('classes')
 export class Class {
@@ -17,11 +14,15 @@ export class Class {
 
   // ── Basic Class Information ─────────────────────────────────────────────────
 
-  @Column()
-  name!: string;
+  // name/code/maxStudents below are nullable at the DB level only to let
+  // pre-existing rows from earlier (renamed) schema versions pass schema
+  // sync; all three stay required for new submissions via CreateClassDto.
 
-  @Column()
-  code!: string;
+  @Column({ type: 'enum', enum: ClassName, nullable: true })
+  name?: ClassName;
+
+  @Column({ nullable: true })
+  code?: string;
 
   @Column({ type: 'enum', enum: EducationLevel })
   educationLevel!: EducationLevel;
@@ -37,16 +38,17 @@ export class Class {
 
   // ── Class Management ────────────────────────────────────────────────────────
 
-  @ManyToOne(() => Teacher, { eager: true, nullable: false, onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'classTeacherRefId' })
-  classTeacher!: Teacher;
+  // Nullable at the DB level so a pre-existing row from an earlier schema
+  // version doesn't break schema sync; still required for new submissions
+  // via CreateClassDto validation.
+  @Column({ nullable: true })
+  classTeacher?: string;
 
-  @ManyToOne(() => Teacher, { eager: true, nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'assistantClassTeacherRefId' })
-  assistantClassTeacher?: Teacher;
+  @Column({ nullable: true })
+  assistantClassTeacher?: string;
 
-  @Column()
-  maxStudents!: number;
+  @Column({ nullable: true })
+  maxStudents?: number;
 
   @Column({ default: 0 })
   currentStudentCount!: number;

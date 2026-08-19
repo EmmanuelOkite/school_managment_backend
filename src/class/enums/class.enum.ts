@@ -1,5 +1,13 @@
+export enum ClassName {
+  SENIOR_ONE = 'Senior One',
+  SENIOR_TWO = 'Senior Two',
+  SENIOR_THREE = 'Senior Three',
+  SENIOR_FOUR = 'Senior Four',
+  SENIOR_FIVE = 'Senior Five',
+  SENIOR_SIX = 'Senior Six',
+}
+
 export enum EducationLevel {
-  PRIMARY = 'Primary',
   O_LEVEL = 'O-Level',
   A_LEVEL = 'A-Level',
 }

@@ -9,15 +9,14 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { EducationLevel, Term, ClassStatus } from '../enums/class.enum';
+import { ClassName, EducationLevel, Term, ClassStatus } from '../enums/class.enum';
 
 export class CreateClassDto {
   // ── Basic Class Information ─────────────────────────────────────────────────
 
-  @ApiProperty({ description: 'Name of the class', example: 'Senior 1' })
-  @IsString()
-  @IsNotEmpty()
-  name!: string;
+  @ApiProperty({ description: 'Name of the class', enum: ClassName, example: ClassName.SENIOR_ONE })
+  @IsEnum(ClassName)
+  name!: ClassName;
 
   @ApiProperty({ description: 'Short code identifying the class', example: 'S1' })
   @IsString()
@@ -50,21 +49,15 @@ export class CreateClassDto {
 
   // ── Class Management ────────────────────────────────────────────────────────
 
-  @ApiProperty({
-    description: 'System UUID of the class teacher (from GET /teachers)',
-    example: 'a3f1c2d4-1234-5678-abcd-ef0123456789',
-  })
+  @ApiProperty({ description: "Name of the class teacher", example: 'Mr. John Kato' })
   @IsString()
   @IsNotEmpty()
-  classTeacherId!: string;
+  classTeacher!: string;
 
-  @ApiPropertyOptional({
-    description: 'System UUID of the assistant class teacher (optional, from GET /teachers)',
-    example: 'b7e2d3f5-2345-6789-bcde-f01234567890',
-  })
+  @ApiPropertyOptional({ description: 'Name of the assistant class teacher (optional)', example: 'Ms. Grace Nakato' })
   @IsOptional()
   @IsString()
-  assistantClassTeacherId?: string;
+  assistantClassTeacher?: string;
 
   @ApiProperty({ description: 'Maximum number of students the class can hold', example: 120, minimum: 1 })
   @IsInt()

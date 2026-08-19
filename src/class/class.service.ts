@@ -7,31 +7,18 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Class } from './entities/class.entity';
-import { Teacher } from '../teacher/entities/teacher.entity';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
-
-// The API also exposes classTeacherId/assistantClassTeacherId as flat UUID
-// strings alongside the nested teacher objects, since that's what the
-// frontend list/edit views read the assigned teacher from.
-export type ClassResponse = Class & {
-  classTeacherId: string;
-  assistantClassTeacherId?: string;
-};
 
 @Injectable()
 export class ClassService {
   constructor(
     @InjectRepository(Class)
     private readonly classRepo: Repository<Class>,
-    @InjectRepository(Teacher)
-    private readonly teacherRepo: Repository<Teacher>,
   ) {}
 
-  async create(dto: CreateClassDto): Promise<ClassResponse> {
-    if (dto.assistantClassTeacherId && dto.assistantClassTeacherId === dto.classTeacherId) {
-      throw new BadRequestException('Assistant class teacher must be different from the class teacher.');
-    }
+  async create(dto: CreateClassDto): Promise<Class> {
+    this.assertDistinctTeachers(dto.classTeacher, dto.assistantClassTeacher);
 
     const existing = await this.classRepo.findOne({
       where: { code: dto.code, academicYear: dto.academicYear },
@@ -42,42 +29,26 @@ export class ClassService {
       );
     }
 
-    const classTeacher = await this.findTeacherById(dto.classTeacherId);
-    const assistantClassTeacher = dto.assistantClassTeacherId
-      ? await this.findTeacherById(dto.assistantClassTeacherId)
-      : undefined;
-
-    const { classTeacherId, assistantClassTeacherId, ...rest } = dto;
-    const schoolClass = this.classRepo.create({
-      ...rest,
-      classTeacher,
-      assistantClassTeacher,
-      currentStudentCount: 0,
-    });
-    const saved = await this.classRepo.save(schoolClass);
-    return this.toResponse(saved);
+    const schoolClass = this.classRepo.create({ ...dto, currentStudentCount: 0 });
+    return this.classRepo.save(schoolClass);
   }
 
-  async findAll(): Promise<ClassResponse[]> {
-    const classes = await this.classRepo.find({ order: { createdAt: 'DESC' } });
-    return classes.map((c) => this.toResponse(c));
+  async findAll(): Promise<Class[]> {
+    return this.classRepo.find({ order: { createdAt: 'DESC' } });
   }
 
-  async findOne(id: string): Promise<ClassResponse> {
+  async findOne(id: string): Promise<Class> {
     const schoolClass = await this.classRepo.findOne({ where: { id } });
     if (!schoolClass) throw new NotFoundException(`Class with UUID "${id}" not found.`);
-    return this.toResponse(schoolClass);
+    return schoolClass;
   }
 
-  async update(id: string, dto: UpdateClassDto): Promise<ClassResponse> {
-    const schoolClass = await this.classRepo.findOne({ where: { id } });
-    if (!schoolClass) throw new NotFoundException(`Class with UUID "${id}" not found.`);
+  async update(id: string, dto: UpdateClassDto): Promise<Class> {
+    const schoolClass = await this.findOne(id);
 
-    const effectiveClassTeacherId = dto.classTeacherId ?? schoolClass.classTeacher.id;
-    const effectiveAssistantId = dto.assistantClassTeacherId ?? schoolClass.assistantClassTeacher?.id;
-    if (effectiveAssistantId && effectiveAssistantId === effectiveClassTeacherId) {
-      throw new BadRequestException('Assistant class teacher must be different from the class teacher.');
-    }
+    const effectiveClassTeacher = dto.classTeacher ?? schoolClass.classTeacher;
+    const effectiveAssistant = dto.assistantClassTeacher ?? schoolClass.assistantClassTeacher;
+    this.assertDistinctTeachers(effectiveClassTeacher, effectiveAssistant);
 
     const effectiveCode = dto.code ?? schoolClass.code;
     const effectiveAcademicYear = dto.academicYear ?? schoolClass.academicYear;
@@ -92,37 +63,23 @@ export class ClassService {
       }
     }
 
-    if (dto.classTeacherId) {
-      schoolClass.classTeacher = await this.findTeacherById(dto.classTeacherId);
-    }
-    if (dto.assistantClassTeacherId) {
-      schoolClass.assistantClassTeacher = await this.findTeacherById(dto.assistantClassTeacherId);
-    }
-
-    const { classTeacherId, assistantClassTeacherId, ...rest } = dto;
-    Object.assign(schoolClass, rest);
-    const saved = await this.classRepo.save(schoolClass);
-    return this.toResponse(saved);
+    Object.assign(schoolClass, dto);
+    return this.classRepo.save(schoolClass);
   }
 
   async remove(id: string): Promise<{ message: string }> {
-    const schoolClass = await this.classRepo.findOne({ where: { id } });
-    if (!schoolClass) throw new NotFoundException(`Class with UUID "${id}" not found.`);
+    const schoolClass = await this.findOne(id);
     await this.classRepo.remove(schoolClass);
     return { message: `Class "${schoolClass.name}" deleted successfully.` };
   }
 
-  private async findTeacherById(id: string): Promise<Teacher> {
-    const teacher = await this.teacherRepo.findOne({ where: { id } });
-    if (!teacher) throw new NotFoundException(`Teacher with ID "${id}" not found.`);
-    return teacher;
-  }
-
-  private toResponse(schoolClass: Class): ClassResponse {
-    return {
-      ...schoolClass,
-      classTeacherId: schoolClass.classTeacher.id,
-      assistantClassTeacherId: schoolClass.assistantClassTeacher?.id,
-    };
+  private assertDistinctTeachers(classTeacher?: string, assistantClassTeacher?: string): void {
+    if (
+      classTeacher &&
+      assistantClassTeacher &&
+      classTeacher.trim().toLowerCase() === assistantClassTeacher.trim().toLowerCase()
+    ) {
+      throw new BadRequestException('Assistant class teacher must be different from the class teacher.');
+    }
   }
 }
