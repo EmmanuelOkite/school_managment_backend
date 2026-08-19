@@ -7,6 +7,7 @@ import {
   Matches,
   Min,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { EducationLevel, Term, ClassStatus } from '../enums/class.enum';
 
@@ -16,12 +17,12 @@ export class CreateClassDto {
   @ApiProperty({ description: 'Name of the class', example: 'Senior 1' })
   @IsString()
   @IsNotEmpty()
-  className!: string;
+  name!: string;
 
   @ApiProperty({ description: 'Short code identifying the class', example: 'S1' })
   @IsString()
   @IsNotEmpty()
-  classCode!: string;
+  code!: string;
 
   @ApiProperty({
     description: 'Education level the class belongs to',
@@ -37,6 +38,7 @@ export class CreateClassDto {
   academicYear!: string;
 
   @ApiPropertyOptional({ description: 'Academic term (optional)', enum: Term, example: Term.TERM_ONE })
+  @Transform(({ value }) => (value === '' ? undefined : value))
   @IsOptional()
   @IsEnum(Term)
   term?: Term;
@@ -49,16 +51,16 @@ export class CreateClassDto {
   // ── Class Management ────────────────────────────────────────────────────────
 
   @ApiProperty({
-    description: 'Teacher ID (employee number) of the class teacher, e.g. T-2026-000001',
-    example: 'T-2026-000001',
+    description: 'System UUID of the class teacher (from GET /teachers)',
+    example: 'a3f1c2d4-1234-5678-abcd-ef0123456789',
   })
   @IsString()
   @IsNotEmpty()
   classTeacherId!: string;
 
   @ApiPropertyOptional({
-    description: 'Teacher ID (employee number) of the assistant class teacher (optional)',
-    example: 'T-2026-000002',
+    description: 'System UUID of the assistant class teacher (optional, from GET /teachers)',
+    example: 'b7e2d3f5-2345-6789-bcde-f01234567890',
   })
   @IsOptional()
   @IsString()
@@ -67,7 +69,7 @@ export class CreateClassDto {
   @ApiProperty({ description: 'Maximum number of students the class can hold', example: 120, minimum: 1 })
   @IsInt()
   @Min(1)
-  maximumStudents!: number;
+  maxStudents!: number;
 
   @ApiPropertyOptional({
     description: 'Current status of the class (defaults to Active)',

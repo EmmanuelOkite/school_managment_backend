@@ -18,10 +18,10 @@ export class Class {
   // ── Basic Class Information ─────────────────────────────────────────────────
 
   @Column()
-  className!: string;
+  name!: string;
 
   @Column()
-  classCode!: string;
+  code!: string;
 
   @Column({ type: 'enum', enum: EducationLevel })
   educationLevel!: EducationLevel;
@@ -46,7 +46,7 @@ export class Class {
   assistantClassTeacher?: Teacher;
 
   @Column()
-  maximumStudents!: number;
+  maxStudents!: number;
 
   @Column({ default: 0 })
   currentStudentCount!: number;

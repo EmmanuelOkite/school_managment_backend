@@ -17,7 +17,7 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
-import { ClassService } from './class.service';
+import { ClassService, ClassResponse } from './class.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { Class } from './entities/class.entity';
@@ -33,16 +33,16 @@ export class ClassController {
     summary: 'Create a new class',
     description:
       'Creates a new class. classTeacherId and assistantClassTeacherId must reference ' +
-      'the teacherId (employee number) of an existing teacher. A class is unique by ' +
-      'the combination of classCode and academicYear. currentStudentCount always starts at 0 ' +
+      'the system UUID (id) of an existing teacher. A class is unique by ' +
+      'the combination of code and academicYear. currentStudentCount always starts at 0 ' +
       'and is managed by the system as students are enrolled.',
   })
   @ApiBody({ type: CreateClassDto })
   @ApiResponse({ status: 201, description: 'Class created successfully.', type: Class })
   @ApiResponse({ status: 400, description: 'Validation error, or assistant teacher same as class teacher.' })
   @ApiResponse({ status: 404, description: 'Class teacher or assistant class teacher not found.' })
-  @ApiResponse({ status: 409, description: 'A class with the same classCode already exists for that academicYear.' })
-  create(@Body() dto: CreateClassDto): Promise<Class> {
+  @ApiResponse({ status: 409, description: 'A class with the same code already exists for that academicYear.' })
+  create(@Body() dto: CreateClassDto): Promise<ClassResponse> {
     return this.classService.create(dto);
   }
 
@@ -52,7 +52,7 @@ export class ClassController {
     description: 'Returns a list of all classes, newest first.',
   })
   @ApiResponse({ status: 200, description: 'List of classes returned successfully.', type: [Class] })
-  findAll(): Promise<Class[]> {
+  findAll(): Promise<ClassResponse[]> {
     return this.classService.findAll();
   }
 
@@ -64,7 +64,7 @@ export class ClassController {
   @ApiParam({ name: 'id', description: 'System UUID of the class', example: 'a3f1c2d4-1234-5678-abcd-ef0123456789' })
   @ApiResponse({ status: 200, description: 'Class found and returned.', type: Class })
   @ApiResponse({ status: 404, description: 'Class not found.' })
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Class> {
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<ClassResponse> {
     return this.classService.findOne(id);
   }
 
@@ -78,11 +78,11 @@ export class ClassController {
   @ApiResponse({ status: 200, description: 'Class updated successfully.', type: Class })
   @ApiResponse({ status: 400, description: 'Validation error, or assistant teacher same as class teacher.' })
   @ApiResponse({ status: 404, description: 'Class, class teacher, or assistant class teacher not found.' })
-  @ApiResponse({ status: 409, description: 'A class with the same classCode already exists for that academicYear.' })
+  @ApiResponse({ status: 409, description: 'A class with the same code already exists for that academicYear.' })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateClassDto,
-  ): Promise<Class> {
+  ): Promise<ClassResponse> {
     return this.classService.update(id, dto);
   }
 

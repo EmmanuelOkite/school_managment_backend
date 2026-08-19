@@ -1,7 +1,7 @@
 export enum EducationLevel {
   PRIMARY = 'Primary',
-  O_LEVEL = 'O Level',
-  A_LEVEL = 'A Level',
+  O_LEVEL = 'O-Level',
+  A_LEVEL = 'A-Level',
 }
 
 export enum Term {
