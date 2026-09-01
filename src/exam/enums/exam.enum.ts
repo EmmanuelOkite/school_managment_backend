@@ -20,14 +20,3 @@ export enum ExamType {
   MOCK = 'Mock Exam',
   FINAL_EXAM = 'Final Exam',
 }
-
-export enum GradingScale {
-  STANDARD_A_F = 'Standard (A–F)',
-  PERCENTAGE_ONLY = 'Percentage Only',
-  PASS_FAIL = 'Pass/Fail',
-}
-
-export enum AssignmentMethod {
-  AUTOMATIC = 'Automatic',
-  MANUAL = 'Manual',
-}
