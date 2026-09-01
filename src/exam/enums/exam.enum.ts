@@ -12,10 +12,23 @@ export enum Term {
   TERM_THREE = 'Term 3',
 }
 
+export enum ExamType {
+  MIDTERM = 'Midterm',
+  END_OF_TERM = 'End of Term',
+  TEST = 'Test',
+  QUIZ = 'Quiz',
+  MOCK = 'Mock',
+  FINAL_EXAM = 'Final Exam',
+}
+
 export enum GradingScale {
-  DISTINCTION = 'Distinction',
-  MERIT = 'Merit',
-  CREDIT = 'Credit',
-  PASS = 'Pass',
-  FAIL = 'Fail',
+  STANDARD_A_F = 'Standard (A–F)',
+  PERCENTAGE = 'Percentage',
+  UGANDA_O_LEVEL = 'Uganda O-Level (D1–F9)',
+  CUSTOM = 'Custom',
+}
+
+export enum AssignmentMethod {
+  AUTOMATIC = 'Automatic',
+  MANUAL = 'Manual',
 }

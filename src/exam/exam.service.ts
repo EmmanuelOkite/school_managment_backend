@@ -8,9 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Exam } from './entities/exam.entity';
 import { Teacher } from '../teacher/entities/teacher.entity';
+import { Student } from '../student/entities/student.entity';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
-import { ExamStatus } from './enums/exam.enum';
+import { ExamStatus, AssignmentMethod } from './enums/exam.enum';
 
 @Injectable()
 export class ExamService {
@@ -20,7 +21,26 @@ export class ExamService {
 
     @InjectRepository(Teacher)
     private readonly teacherRepo: Repository<Teacher>,
+
+    @InjectRepository(Student)
+    private readonly studentRepo: Repository<Student>,
   ) {}
+
+  private toMinutes(time: string): number {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+
+  /**
+   * Counts students in the given class. Note: the Student entity has no
+   * "stream" field, so this can only filter by class, not class+stream.
+   */
+  private async countStudentsInClass(className: string): Promise<number> {
+    return this.studentRepo
+      .createQueryBuilder('student')
+      .where('CAST(student.class AS text) = :className', { className })
+      .getCount();
+  }
 
   async create(dto: CreateExamDto): Promise<Exam> {
     // Verify teacher exists
@@ -53,9 +73,22 @@ export class ExamService {
     if (dto.endTime <= dto.startTime) {
       throw new BadRequestException('End time must be after start time.');
     }
+    const durationMinutes = this.toMinutes(dto.endTime) - this.toMinutes(dto.startTime);
+
+    const assignmentMethod = dto.assignmentMethod ?? AssignmentMethod.AUTOMATIC;
+    const studentCount =
+      assignmentMethod === AssignmentMethod.AUTOMATIC
+        ? await this.countStudentsInClass(dto.class)
+        : dto.studentCount;
 
     const { teacherId, ...examData } = dto;
-    const exam = this.examRepo.create({ ...examData, teacher });
+    const exam = this.examRepo.create({
+      ...examData,
+      teacher,
+      durationMinutes,
+      assignmentMethod,
+      studentCount,
+    });
     return this.examRepo.save(exam);
   }
 
@@ -124,9 +157,18 @@ export class ExamService {
     if (effectiveEnd <= effectiveStart) {
       throw new BadRequestException('End time must be after start time.');
     }
+    const durationMinutes = this.toMinutes(effectiveEnd) - this.toMinutes(effectiveStart);
+
+    // Recompute student count if assignment is (or becomes) Automatic, or the class changed
+    const effectiveAssignmentMethod = dto.assignmentMethod ?? exam.assignmentMethod;
+    const effectiveClass = dto.class ?? exam.class;
+    const studentCount =
+      effectiveAssignmentMethod === AssignmentMethod.AUTOMATIC
+        ? await this.countStudentsInClass(effectiveClass)
+        : (dto.studentCount ?? exam.studentCount);
 
     const { teacherId, ...updateData } = dto;
-    Object.assign(exam, updateData);
+    Object.assign(exam, updateData, { durationMinutes, studentCount });
     return this.examRepo.save(exam);
   }
 
