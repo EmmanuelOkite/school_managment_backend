@@ -13,19 +13,18 @@ export enum Term {
 }
 
 export enum ExamType {
-  MIDTERM = 'Midterm',
-  END_OF_TERM = 'End of Term',
   TEST = 'Test',
   QUIZ = 'Quiz',
-  MOCK = 'Mock',
+  MIDTERM = 'Mid-Term',
+  END_OF_TERM = 'End of Term',
+  MOCK = 'Mock Exam',
   FINAL_EXAM = 'Final Exam',
 }
 
 export enum GradingScale {
   STANDARD_A_F = 'Standard (A–F)',
-  PERCENTAGE = 'Percentage',
-  UGANDA_O_LEVEL = 'Uganda O-Level (D1–F9)',
-  CUSTOM = 'Custom',
+  PERCENTAGE_ONLY = 'Percentage Only',
+  PASS_FAIL = 'Pass/Fail',
 }
 
 export enum AssignmentMethod {
