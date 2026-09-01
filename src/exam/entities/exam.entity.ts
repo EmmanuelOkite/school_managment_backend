@@ -3,11 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Teacher } from '../../teacher/entities/teacher.entity';
+import { ExamQuestion } from './exam-question.entity';
 import { ExamStatus, Term, ExamType } from '../enums/exam.enum';
 
 @Entity('exams')
@@ -75,6 +77,13 @@ export class Exam {
 
   @Column({ nullable: true, type: 'text' })
   remarks?: string;
+
+  @OneToMany(() => ExamQuestion, (question) => question.exam, {
+    cascade: true,
+    eager: true,
+    orphanedRowAction: 'delete',
+  })
+  questions!: ExamQuestion[];
 
   @CreateDateColumn()
   createdAt!: Date;

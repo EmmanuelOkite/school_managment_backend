@@ -10,6 +10,7 @@ import { ParentModule } from './parent/parent.module';
 import { Parent } from './parent/entities/parent.entity';
 import { ExamModule } from './exam/exam.module';
 import { Exam } from './exam/entities/exam.entity';
+import { ExamQuestion } from './exam/entities/exam-question.entity';
 import { TimetableModule } from './timetable/timetable.module';
 import { Timetable } from './timetable/entities/timetable.entity';
 import { FinancialReportModule } from './financial-report/financial-report.module';
@@ -33,7 +34,7 @@ import { Class } from './class/entities/class.entity';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'innovation2?',
       database: process.env.DB_NAME || 'school_db',
-      entities: [Student, Teacher, Parent, Exam, Timetable, FeeCollection, FeeStructure, StudentBalance, Expense, Class],
+      entities: [Student, Teacher, Parent, Exam, ExamQuestion, Timetable, FeeCollection, FeeStructure, StudentBalance, Expense, Class],
       synchronize: true,
     }),
     StudentModule,

@@ -5,11 +5,15 @@ import {
   IsDateString,
   IsOptional,
   IsNotEmpty,
+  IsArray,
+  ValidateNested,
   Min,
   Matches,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ExamStatus, Term, ExamType } from '../enums/exam.enum';
+import { CreateExamQuestionDto } from './create-exam-question.dto';
 
 export class CreateExamDto {
   // ── Basic Exam Information ──────────────────────────────────────────────────
@@ -115,4 +119,16 @@ export class CreateExamDto {
   @IsOptional()
   @IsString()
   remarks?: string;
+
+  // ── Question Paper ───────────────────────────────────────────────────────────
+
+  @ApiPropertyOptional({
+    description: 'Question paper for this exam (optional). On update, sending this replaces the exam\'s entire question set.',
+    type: [CreateExamQuestionDto],
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateExamQuestionDto)
+  questions?: CreateExamQuestionDto[];
 }

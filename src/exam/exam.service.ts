@@ -7,9 +7,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Exam } from './entities/exam.entity';
+import { ExamQuestion } from './entities/exam-question.entity';
 import { Teacher } from '../teacher/entities/teacher.entity';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { CreateExamQuestionDto } from './dto/create-exam-question.dto';
 import { ExamStatus } from './enums/exam.enum';
 
 @Injectable()
@@ -20,7 +22,23 @@ export class ExamService {
 
     @InjectRepository(Teacher)
     private readonly teacherRepo: Repository<Teacher>,
+
+    @InjectRepository(ExamQuestion)
+    private readonly questionRepo: Repository<ExamQuestion>,
   ) {}
+
+  private buildQuestions(questions: CreateExamQuestionDto[]): ExamQuestion[] {
+    return questions.map((q, i) =>
+      this.questionRepo.create({ text: q.text, marks: q.marks, order: i + 1 }),
+    );
+  }
+
+  // The eager "questions" relation isn't guaranteed to come back in insertion
+  // order, so sort explicitly by the stored "order" before returning.
+  private sortQuestions(exam: Exam): Exam {
+    exam.questions = [...exam.questions].sort((a, b) => a.order - b.order);
+    return exam;
+  }
 
   async create(dto: CreateExamDto): Promise<Exam> {
     // Verify teacher exists
@@ -54,33 +72,40 @@ export class ExamService {
       throw new BadRequestException('End time must be after start time.');
     }
 
-    const { teacherId, ...examData } = dto;
-    const exam = this.examRepo.create({ ...examData, teacher });
-    return this.examRepo.save(exam);
+    const { teacherId, questions, ...examData } = dto;
+    const exam = this.examRepo.create({
+      ...examData,
+      teacher,
+      questions: questions ? this.buildQuestions(questions) : [],
+    });
+    return this.sortQuestions(await this.examRepo.save(exam));
   }
 
   async findAll(): Promise<Exam[]> {
-    return this.examRepo.find({ order: { createdAt: 'DESC' } });
+    const exams = await this.examRepo.find({ order: { createdAt: 'DESC' } });
+    return exams.map((exam) => this.sortQuestions(exam));
   }
 
   async findOne(id: string): Promise<Exam> {
     const exam = await this.examRepo.findOne({ where: { id } });
     if (!exam) throw new NotFoundException(`Exam with UUID "${id}" not found.`);
-    return exam;
+    return this.sortQuestions(exam);
   }
 
   async findByClass(className: string): Promise<Exam[]> {
-    return this.examRepo.find({
+    const exams = await this.examRepo.find({
       where: { class: className },
       order: { examDate: 'ASC' },
     });
+    return exams.map((exam) => this.sortQuestions(exam));
   }
 
   async findByStatus(status: ExamStatus): Promise<Exam[]> {
-    return this.examRepo.find({
+    const exams = await this.examRepo.find({
       where: { status },
       order: { examDate: 'ASC' },
     });
+    return exams.map((exam) => this.sortQuestions(exam));
   }
 
   async update(id: string, dto: UpdateExamDto): Promise<Exam> {
@@ -125,9 +150,14 @@ export class ExamService {
       throw new BadRequestException('End time must be after start time.');
     }
 
-    const { teacherId, ...updateData } = dto;
+    const { teacherId, questions, ...updateData } = dto;
     Object.assign(exam, updateData);
-    return this.examRepo.save(exam);
+    // Only touch the question set if the client explicitly sent one — this
+    // fully replaces the exam's existing questions, it doesn't merge.
+    if (questions !== undefined) {
+      exam.questions = this.buildQuestions(questions);
+    }
+    return this.sortQuestions(await this.examRepo.save(exam));
   }
 
   async remove(id: string): Promise<{ message: string }> {
