@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -24,9 +25,13 @@ import { FeeStructureModule } from './fee-structure/fee-structure.module';
 import { FeeCollectionModule } from './fee-collection/fee-collection.module';
 import { ClassModule } from './class/class.module';
 import { Class } from './class/entities/class.entity';
+import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',
@@ -34,7 +39,7 @@ import { Class } from './class/entities/class.entity';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'innovation2?',
       database: process.env.DB_NAME || 'school_db',
-      entities: [Student, Teacher, Parent, Exam, ExamQuestion, Timetable, FeeCollection, FeeStructure, StudentBalance, Expense, Class],
+      entities: [Student, Teacher, Parent, Exam, ExamQuestion, Timetable, FeeCollection, FeeStructure, StudentBalance, Expense, Class, User],
       synchronize: true,
     }),
     StudentModule,
@@ -48,6 +53,8 @@ import { Class } from './class/entities/class.entity';
     StudentBalanceModule,
     ExpenseModule,
     ClassModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
