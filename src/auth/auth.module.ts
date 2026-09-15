@@ -23,7 +23,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         }
         return {
           secret,
-          signOptions: { expiresIn: config.get<string>('JWT_EXPIRES_IN') ?? '1d' },
+          // @nestjs/jwt types expiresIn against `ms`'s template-literal
+          // StringValue type, which a value read from env can't satisfy statically.
+          signOptions: { expiresIn: (config.get<string>('JWT_EXPIRES_IN') ?? '1d') as any },
         };
       },
     }),
