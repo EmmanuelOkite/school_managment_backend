@@ -1,20 +1,24 @@
 /**
  * One-off dev utility to create (or reset) an admin user, since there is no
- * account-creation API yet. Run with: npm run seed:admin -- <email> <password>
- * Both args are optional - defaults to admin@school.com with a random
- * generated password printed to the console.
+ * account-creation API yet. Run with: npm run seed:admin
+ * Reads ADMIN_EMAIL and ADMIN_PASSWORD from .env - never hardcode real
+ * credentials in this file or pass them on the command line, where they'd
+ * land in shell history.
  */
 import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
 import { User } from '../src/user/entities/user.entity';
 import { UserRole } from '../src/user/enums/user.enum';
 
 async function main() {
-  const email = process.argv[2] ?? 'admin@school.com';
-  const generatedPassword = crypto.randomBytes(9).toString('base64url');
-  const password = process.argv[3] ?? generatedPassword;
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password) {
+    console.error('ADMIN_EMAIL and ADMIN_PASSWORD must be set in your .env file.');
+    process.exit(1);
+  }
 
   const dataSource = new DataSource({
     type: 'postgres',
@@ -43,11 +47,6 @@ async function main() {
     user = userRepo.create({ email, password: passwordHash, role: UserRole.ADMIN, isActive: true });
     await userRepo.save(user);
     console.log(`Created new admin user "${email}".`);
-  }
-
-  if (!process.argv[3]) {
-    console.log(`Generated password: ${password}`);
-    console.log('Change it once account creation/password-change endpoints exist.');
   }
 
   await dataSource.destroy();
